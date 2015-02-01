@@ -149,10 +149,11 @@ public class RunningActivity extends ActionBarActivity implements
                         theirPace.setText(String.format("%s km/hr", theirTempPace));
 
                         received_encouragement = runObj.getInt(otherUser + "_encouragement");
+                        Log.d("Saving to Parse", "Encouragement: " + String.valueOf(received_encouragement));
                         doEncouragement();
 
-                        Log.d("Saving to Parse", "Encouragement: " + String.valueOf(received_encouragement));
-                        Log.d("Saving to Parse", "Key: " + otherUser + "_encouragement");
+                        // after the encouragement, it should be reset to 0...
+                        runObj.put(otherUser + "_encouragement", received_encouragement);
 
                         runObj.put(whichUser + "_encouragement", sent_encouragement);
                         runObj.put(whichUser + "_distance", myTempDist);
@@ -169,7 +170,7 @@ public class RunningActivity extends ActionBarActivity implements
             data.addString(0, String.format("%s:%s", minutes, seconds));
             PebbleKit.sendDataToPebble(getApplicationContext(), PEBBLE_APP_UUID, data);
 
-            timerHandler.postDelayed(this, 1000);
+            timerHandler.postDelayed(this, 2000);
         }
     };
 
