@@ -93,6 +93,29 @@ public class ReadyActivity extends ActionBarActivity {
             myReadyButton.setBackgroundColor(Color.parseColor("#B20000"));
             myReadyButton.setText("NOT READY");
         }
+
+        // update Parse
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Ready");
+        query.whereEqualTo("objectId", readyObjId);
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> readyList, ParseException e) {
+                if (e == null) {
+                    if (readyList.size() > 0) {
+                        boolean bothReady = false;
+                        ParseObject readyObj = readyList.get(0);
+
+                        if (whichUser == "first") {
+                            readyObj.put("firstUserStatus", true);
+                            readyObj.saveInBackground();
+                        } else {
+                            readyObj.put("secondUserStatus", true);
+                            readyObj.saveInBackground();
+                        }
+                    }
+                }
+            }
+        });
     }
 
     public void checkIfBothReady() {
@@ -107,7 +130,7 @@ public class ReadyActivity extends ActionBarActivity {
                         ParseObject readyObj = readyList.get(0);
 
                         if (whichUser == "first") {
-                            boolean isOtherReady = (boolean) readyObj.get("firstUserStatus");
+                            boolean isOtherReady = (boolean) readyObj.get("secondUserStatus");
                             updateOtherUser(isOtherReady);
 
                             if (ready && isOtherReady) {
@@ -115,7 +138,7 @@ public class ReadyActivity extends ActionBarActivity {
                             }
 
                         } else if (whichUser == "second") {
-                            boolean isOtherReady = (boolean) readyObj.get("secondUserStatus");
+                            boolean isOtherReady = (boolean) readyObj.get("firstUserStatus");
                             updateOtherUser(isOtherReady);
 
                             if (ready && isOtherReady) {
