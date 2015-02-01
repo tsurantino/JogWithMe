@@ -31,7 +31,7 @@ public class MatchingActivity extends ActionBarActivity {
         @Override
         public void run() {
 
-            checkMyRoom(); // check if someone has joined my room
+            checkInRoom(); // check if someone has joined my room
             checkReady();  // check if there are any other rooms to join
             checkMatches(); // check if we need to create our own room
 
@@ -76,10 +76,10 @@ public class MatchingActivity extends ActionBarActivity {
         });
     }
 
-    public void checkMyRoom() {
+    public void checkInRoom() {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Ready");
 
-        query.whereNotEqualTo("secondUser", "");
+        query.whereEqualTo("secondUser", ParseUser.getCurrentUser().getUsername());
         query.whereEqualTo("duration", objDuration);
         query.whereEqualTo("distance", objDistance);
 
@@ -97,7 +97,7 @@ public class MatchingActivity extends ActionBarActivity {
                                 if (e == null) {
                                     // successful save
                                     String rObjId = readyObjId;
-                                    goToReady(rObjId, "first");
+                                    goToReady(rObjId, "second");
                                 }
                             }
                         });

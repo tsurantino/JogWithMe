@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -51,6 +52,8 @@ public class ReadyActivity extends ActionBarActivity {
             readyObjId = extras.getString("readyObjId");
             whichUser = extras.getString("whichUser");
         }
+
+        Log.d("Room", "Joined room: " + readyObjId);
 
         startTime = System.currentTimeMillis();
         timerHandler.postDelayed(timerRunnable, 0);
@@ -96,22 +99,17 @@ public class ReadyActivity extends ActionBarActivity {
 
         // update Parse
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Ready");
-        query.whereEqualTo("objectId", readyObjId);
 
-        query.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> readyList, ParseException e) {
+        // Retrieve the object by id
+        query.getInBackground(readyObjId, new GetCallback<ParseObject>() {
+            public void done(ParseObject readyObj, ParseException e) {
                 if (e == null) {
-                    if (readyList.size() > 0) {
-                        boolean bothReady = false;
-                        ParseObject readyObj = readyList.get(0);
-
-                        if (whichUser == "first") {
-                            readyObj.put("firstUserStatus", true);
-                            readyObj.saveInBackground();
-                        } else {
-                            readyObj.put("secondUserStatus", true);
-                            readyObj.saveInBackground();
-                        }
+                    if (whichUser == "first") {
+                        readyObj.put("firstUserStatus", true);
+                        readyObj.saveInBackground();
+                    } else {
+                        readyObj.put("secondUserStatus", true);
+                        readyObj.saveInBackground();
                     }
                 }
             }
