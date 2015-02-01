@@ -40,6 +40,8 @@ public class MatchingActivity extends ActionBarActivity {
     };
 
     public void checkAll() {
+        Log.d("Matching", "Checking my room first");
+
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Ready");
 
         query.whereEqualTo("secondUser", ParseUser.getCurrentUser().getUsername());
@@ -50,9 +52,11 @@ public class MatchingActivity extends ActionBarActivity {
             public void done(List<ParseObject> readyList, ParseException e) {
                 if (e == null) {
                     /* I am ready second, therefore, I am the second user */
-                    Log.d("Matching", "Retrieved " + readyList.size() + " in my room");
+                    Log.d("Matching", "Someone has joined my room");
 
                     if (readyList.size() > 0) {
+                        Log.d("Matching", "Using my room for ready state");
+
                         final String readyObjId = readyList.get(0).getObjectId();
                         readyList.get(0).saveInBackground(new SaveCallback() {
                             @Override
@@ -64,81 +68,89 @@ public class MatchingActivity extends ActionBarActivity {
                                 }
                             }
                         });
+                    } else {
+                        Log.d("Matching", "Checking other rooms instead");
+
+                        checkOtherRooms();
                     }
                 } else {
                     Log.d("Matching", "Could not find someone in my room");
+                }
+            }
+        });
+    }
 
-                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Ready");
+    public void checkOtherRooms() {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Ready");
 
-                    query.whereEqualTo("secondUser", "");
-                    query.whereEqualTo("duration", objDuration);
-                    query.whereEqualTo("distance", objDistance);
+        query.whereEqualTo("secondUser", "");
+        query.whereEqualTo("duration", objDuration);
+        query.whereEqualTo("distance", objDistance);
 
-                    query.findInBackground(new FindCallback<ParseObject>() {
-                        public void done(List<ParseObject> readyList, ParseException e) {
-                            if (e == null) {
-                                Log.d("Ready", "Retrieved " + readyList.size() + " other room to join");
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> readyList, ParseException e) {
+                if (e == null) {
+                    Log.d("Ready", "Retrieved " + readyList.size() + " other room to join");
 
-                                if (readyList.size() > 0) {
-                                    final String readyObjId = readyList.get(0).getObjectId();
+                    if (readyList.size() > 0) {
+                        Log.d("Matching", "Joining someones room");
+                        final String readyObjId = readyList.get(0).getObjectId();
 
-                                    readyList.get(0).put("secondUser", ParseUser.getCurrentUser().getUsername());
-                                    readyList.get(0).saveInBackground(new SaveCallback() {
-                                        @Override
-                                        public void done(ParseException e) {
-                                            if (e == null) {
-                                                // successful save
-                                                String rObjId = readyObjId;
-                                                goToReady(rObjId, "second");
-                                            }
-                                        }
-                                    });
+                        readyList.get(0).put("secondUser", ParseUser.getCurrentUser().getUsername());
+                        readyList.get(0).saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    // successful save
+                                    String rObjId = readyObjId;
+                                    goToReady(rObjId, "second");
                                 }
-                            } else {
-                                Log.d("Ready", "Error: " + e.getMessage());
-                                ParseQuery<ParseObject> query = ParseQuery.getQuery("Match");
-
-                                query.whereNotEqualTo("objectId", objId);
-                                query.whereEqualTo("duration", objDuration);
-                                query.whereEqualTo("distance", objDistance);
-
-                                query.findInBackground(new FindCallback<ParseObject>() {
-                                    public void done(List<ParseObject> matchList, ParseException e) {
-                                        if (e == null) {
-                                            if (matchList.size() > 0) {
-
-                                                Log.d("Matching", "Creating a room");
-
-                                                final ParseObject newReadyObj = new ParseObject("Ready");
-                                                newReadyObj.put("firstUser", ParseUser.getCurrentUser().getUsername());
-                                                newReadyObj.put("secondUser", "");
-                                                newReadyObj.put("firstUserStatus", 0);
-                                                newReadyObj.put("secondUserStatus", 0);
-                                                newReadyObj.put("duration", objDuration);
-                                                newReadyObj.put("distance", objDistance);
-                                                newReadyObj.saveInBackground(new SaveCallback() {
-                                                    @Override
-                                                    public void done(ParseException e) {
-                                                        if (e == null) {
-                                                            // successful save
-                                                            String rObjId = newReadyObj.getObjectId();
-                                                            goToReady(rObjId, "first");
-                                                        }
-                                                    }
-                                                });
-                                            }
-
-                                        } else {
-                                            Log.d("Matching", "Error: " + e.getMessage());
-                                            canPoll = true;
-
-
-                                        }
-                                    }
-                                });
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        Log.d("Matching", "Trying to create a room instead");
+                        tryToCreateARoom();
+                    }
+                } else {
+                    Log.d("Ready", "Error: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    public void tryToCreateARoom() {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Match");
+
+        query.whereNotEqualTo("objectId", objId);
+        query.whereEqualTo("duration", objDuration);
+        query.whereEqualTo("distance", objDistance);
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> matchList, ParseException e) {
+                if (e == null) {
+                    if (matchList.size() > 0) {
+                        Log.d("Matching", "Creating a room");
+
+                        final ParseObject newReadyObj = new ParseObject("Ready");
+                        newReadyObj.put("firstUser", ParseUser.getCurrentUser().getUsername());
+                        newReadyObj.put("secondUser", "");
+                        newReadyObj.put("firstUserStatus", 0);
+                        newReadyObj.put("secondUserStatus", 0);
+                        newReadyObj.put("duration", objDuration);
+                        newReadyObj.put("distance", objDistance);
+                        newReadyObj.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    // successful save
+                                    String rObjId = newReadyObj.getObjectId();
+                                    goToReady(rObjId, "first");
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    Log.d("Matching", "Error: " + e.getMessage());
                 }
             }
         });
