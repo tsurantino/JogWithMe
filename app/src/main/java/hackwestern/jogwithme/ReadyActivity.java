@@ -132,7 +132,7 @@ public class ReadyActivity extends ActionBarActivity {
             public void done(List<ParseObject> readyList, ParseException e) {
                 if (e == null) {
                     if (readyList.size() > 0) {
-                        Log.d("Ready", "Found our room");
+                        Log.d("Ready", "Checking both found our room");
                         boolean bothReady = false;
                         ParseObject readyObj = readyList.get(0);
 

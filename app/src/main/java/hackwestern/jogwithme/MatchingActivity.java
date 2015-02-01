@@ -134,8 +134,8 @@ public class MatchingActivity extends ActionBarActivity {
                         final ParseObject newReadyObj = new ParseObject("Ready");
                         newReadyObj.put("firstUser", ParseUser.getCurrentUser().getUsername());
                         newReadyObj.put("secondUser", "");
-                        newReadyObj.put("firstUserStatus", 0);
-                        newReadyObj.put("secondUserStatus", 0);
+                        newReadyObj.put("firstUserStatus", false);
+                        newReadyObj.put("secondUserStatus", false);
                         newReadyObj.put("duration", objDuration);
                         newReadyObj.put("distance", objDistance);
                         newReadyObj.saveInBackground(new SaveCallback() {
