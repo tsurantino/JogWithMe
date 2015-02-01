@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 
 public class CountdownActivity extends ActionBarActivity {
-    protected static String runObjId = "";
+    protected static String readyObjId = "";
 
     TextView countdownText;
 
@@ -27,7 +27,7 @@ public class CountdownActivity extends ActionBarActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            runObjId = extras.getString("runObjId");
+            readyObjId = extras.getString("readyObjId");
         }
 
         doCountdown();
@@ -72,7 +72,7 @@ public class CountdownActivity extends ActionBarActivity {
             }, 1000);
         } else {
             Intent openMainActivity =  new Intent(CountdownActivity.this, RunningActivity.class);
-            openMainActivity.putExtra("runObjId", runObjId);
+            openMainActivity.putExtra("readyObjId", readyObjId);
             startActivity(openMainActivity);
             finish();
         }

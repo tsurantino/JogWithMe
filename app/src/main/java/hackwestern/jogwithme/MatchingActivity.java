@@ -58,6 +58,9 @@ public class MatchingActivity extends ActionBarActivity {
                         Log.d("Matching", "Using my room for ready state");
 
                         final String readyObjId = readyList.get(0).getObjectId();
+
+                        Log.d("Check My Room", "Obj id: " + readyObjId);
+
                         readyList.get(0).saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
@@ -96,14 +99,15 @@ public class MatchingActivity extends ActionBarActivity {
                         Log.d("Matching", "Joining someones room");
                         final String readyObjId = readyList.get(0).getObjectId();
 
+                        Log.d("Check Other Rooms", "Obj id: " + readyObjId);
+
                         readyList.get(0).put("secondUser", ParseUser.getCurrentUser().getUsername());
                         readyList.get(0).saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
                                 if (e == null) {
                                     // successful save
-                                    String rObjId = readyObjId;
-                                    goToReady(rObjId, "second");
+                                    goToReady(readyObjId, "second");
                                 }
                             }
                         });
@@ -151,6 +155,9 @@ public class MatchingActivity extends ActionBarActivity {
                                 if (e == null) {
                                     // successful save
                                     String rObjId = newReadyObj.getObjectId();
+
+                                    Log.d("My Room", "Obj id: " + rObjId);
+
                                     goToReady(rObjId, "first");
                                 }
                             }

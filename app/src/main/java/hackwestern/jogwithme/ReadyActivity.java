@@ -24,7 +24,6 @@ import java.util.List;
 
 public class ReadyActivity extends ActionBarActivity {
 
-    protected static String runObjId = "";
     protected static String readyObjId = "";
     protected static String whichUser = "";
     protected static boolean ready = false;
