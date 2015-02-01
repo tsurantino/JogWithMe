@@ -254,7 +254,7 @@ public class RunningActivity extends ActionBarActivity implements
                 @Override
                 public void receiveData(final Context context, final int transactionId,
                                         final PebbleDictionary data) {
-                    Log.i(getLocalClassName(), "Received value=" + data.getString(0) + " for key: 0");
+                    sent_encouragement = Integer.parseInt(data.getString(0));
 
 
                     handler.post(new Runnable() {
