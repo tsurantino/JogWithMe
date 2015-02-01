@@ -24,7 +24,7 @@ public class SplashActivity extends ActionBarActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent openMainActivity =  new Intent(SplashActivity.this, ReadyActivity.class);
+                Intent openMainActivity =  new Intent(SplashActivity.this, LoginActivity.class);
                 startActivity(openMainActivity);
                 finish();
             }
