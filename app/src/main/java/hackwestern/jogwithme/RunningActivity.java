@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
@@ -16,6 +18,7 @@ import com.getpebble.android.kit.PebbleKit.PebbleAckReceiver;
 import com.getpebble.android.kit.PebbleKit.PebbleNackReceiver;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -25,7 +28,10 @@ import java.util.UUID;
 
 
 public class RunningActivity extends ActionBarActivity {
+    protected static int encouragement = -1;
     protected static String runObjId = "";
+
+    protected static String whichUser = "";
 
     public static int limit = 1;
     public static int pollTime = 5;
@@ -51,6 +57,7 @@ public class RunningActivity extends ActionBarActivity {
             if (minutes >= limit && seconds > 0) {
                 // stop the timer
                 timerHandler.removeCallbacks(timerRunnable);
+                killPebble();
 
                 Intent openMainActivity =  new Intent(RunningActivity.this, AfterRunStatsActivity.class);
                 startActivity(openMainActivity);
@@ -60,7 +67,20 @@ public class RunningActivity extends ActionBarActivity {
             }
 
             if (seconds % pollTime == 0) {
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Run");
 
+                // Retrieve the object by id
+                query.getInBackground(runObjId, new GetCallback<ParseObject>() {
+                    public void done(ParseObject runObj, ParseException e) {
+                        Log.d("Run", "Found our run");
+
+                        // set data
+                        if (encouragement >= 0 ) {
+                            runObj.put("encouragement", encouragement);
+                            encouragement = -1;
+                        }
+                    }
+                });
             }
 
             runningDuration.setText(String.format("%d:%02d", minutes, seconds));
@@ -187,5 +207,30 @@ public class RunningActivity extends ActionBarActivity {
 
     public void killPebble() {
         PebbleKit.startAppOnPebble(getApplicationContext(), PEBBLE_APP_UUID);
+    }
+
+    /* encouragements */
+    public void encourageBoost(View v) {
+        encouragement = 0;
+    }
+
+    public void encourageRetain(View v) {
+        encouragement = 1;
+    }
+
+    public void encourageExcel(View v) {
+        encouragement = 2;
+    }
+
+    public void doEncouragement() {
+        switch (encouragement) {
+            case 0:
+                Toast.makeText(getApplicationContext(), "You can do it!", Toast.LENGTH_SHORT).show();
+            case 1:
+                Toast.makeText(getApplicationContext(), "Keep going!", Toast.LENGTH_SHORT).show();
+            case 2:
+                Toast.makeText(getApplicationContext(), "You\'re doing great!", Toast.LENGTH_SHORT).show();
+        }
+        encouragement = -1;
     }
 }

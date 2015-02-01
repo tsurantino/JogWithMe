@@ -156,7 +156,8 @@
             android:text="You Can Do It"
             android:id="@+id/button"
             android:layout_gravity="center_horizontal"
-            android:layout_marginRight="15dp" />
+            android:layout_marginRight="15dp"
+            android:onClick="encourageBoost" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -165,7 +166,8 @@
             android:text="Keep Going"
             android:id="@+id/button2"
             android:layout_gravity="center_horizontal"
-            android:layout_marginRight="15dp" />
+            android:layout_marginRight="15dp"
+            android:onClick="encourageRetain" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -174,6 +176,7 @@
             android:text="You&apos;re doing great"
             android:id="@+id/button3"
             android:layout_gravity="center_horizontal"
+            android:onClick="encourageExcel"
             />
     </LinearLayout>
 
