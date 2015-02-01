@@ -56,7 +56,8 @@ import static android.location.LocationManager.GPS_PROVIDER;
 public class RunningActivity extends ActionBarActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
-    protected static int encouragement = -1;
+    protected static int received_encouragement = -1;
+    protected static int sent_encouragement = -1;
     protected static String readyObjId = "";
 
     protected static String whichUser = "";
@@ -138,22 +139,22 @@ public class RunningActivity extends ActionBarActivity implements
                         ourDistance.setText(String.format("%s m", myTempDist));
                         ourPace.setText(String.format("%s km/hr", myTempPace));
 
-                        theirDistance = (TextView)findViewById(R.id.theirDistance);
-                        theirPace = (TextView)findViewById(R.id.theirPace);
-
                         double theirTempDist = runObj.getNumber(otherUser + "_distance").doubleValue();
                         double theirTempPace = runObj.getNumber(otherUser + "_pace").doubleValue();
+
+                        theirDistance = (TextView)findViewById(R.id.theirDistance);
+                        theirPace = (TextView)findViewById(R.id.theirPace);
 
                         theirDistance.setText(String.format("%s m", theirTempDist));
                         theirPace.setText(String.format("%s km/hr", theirTempPace));
 
-                        encouragement = runObj.getInt(otherUser + "_encouragement");
+                        received_encouragement = runObj.getInt(otherUser + "_encouragement");
                         doEncouragement();
 
-                        Log.d("Saving to Parse", "Encouragement: " + String.valueOf(encouragement));
-                        Log.d("Saving to Parse", "Key: " + whichUser + "_encouragement");
+                        Log.d("Saving to Parse", "Encouragement: " + String.valueOf(received_encouragement));
+                        Log.d("Saving to Parse", "Key: " + otherUser + "_encouragement");
 
-                        runObj.put(whichUser + "_encouragement", encouragement);
+                        runObj.put(whichUser + "_encouragement", sent_encouragement);
                         runObj.put(whichUser + "_distance", myTempDist);
                         runObj.put(whichUser + "_pace", myTempPace);
                         runObj.saveInBackground();
@@ -301,19 +302,19 @@ public class RunningActivity extends ActionBarActivity implements
     /* encouragements */
     public void encourageBoost(View v) {
         Log.d("Encouragement", "Retain!");
-        encouragement = 0;
+        sent_encouragement = 0;
     }
 
     public void encourageRetain(View v) {
-        encouragement = 1;
+        sent_encouragement = 1;
     }
 
     public void encourageExcel(View v) {
-        encouragement = 2;
+        sent_encouragement = 2;
     }
 
     public void doEncouragement() {
-        switch (encouragement) {
+        switch (received_encouragement) {
             case 0:
                 Toast.makeText(getApplicationContext(), "You can do it!", Toast.LENGTH_SHORT).show();
             case 1:
@@ -321,7 +322,7 @@ public class RunningActivity extends ActionBarActivity implements
             case 2:
                 Toast.makeText(getApplicationContext(), "You\'re doing great!", Toast.LENGTH_SHORT).show();
         }
-        encouragement = -1;
+        received_encouragement = -1;
     }
 
     /**
