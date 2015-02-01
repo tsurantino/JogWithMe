@@ -153,8 +153,8 @@ public class RunningActivity extends ActionBarActivity implements
                         doEncouragement();
 
                         // after the encouragement, it should be reset to 0...
+                        received_encouragement = 0;
                         runObj.put(otherUser + "_encouragement", received_encouragement);
-
                         runObj.put(whichUser + "_encouragement", sent_encouragement);
                         runObj.put(whichUser + "_distance", myTempDist);
                         runObj.put(whichUser + "_pace", myTempPace);
@@ -326,7 +326,6 @@ public class RunningActivity extends ActionBarActivity implements
                 Toast.makeText(getApplicationContext(), "You\'re doing great!", Toast.LENGTH_SHORT).show();
                 break;
         }
-        received_encouragement = 0;
     }
 
     /**
