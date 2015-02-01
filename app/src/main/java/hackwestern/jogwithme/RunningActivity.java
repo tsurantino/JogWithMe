@@ -150,7 +150,6 @@ public class RunningActivity extends ActionBarActivity implements
                         encouragement = runObj.getInt(otherUser + "_encouragement");
                         doEncouragement();
 
-
                         Log.d("Saving to Parse", "Encouragement: " + String.valueOf(encouragement));
                         Log.d("Saving to Parse", "Key: " + whichUser + "_encouragement");
 
@@ -181,7 +180,8 @@ public class RunningActivity extends ActionBarActivity implements
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             readyObjId = extras.getString("readyObjId");
-            Log.d("Running", "Setting readyObjId to: " + readyObjId);
+            whichUser = extras.getString("whichUser");
+
         }
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Run");

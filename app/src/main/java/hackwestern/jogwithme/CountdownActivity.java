@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 public class CountdownActivity extends ActionBarActivity {
     protected static String readyObjId = "";
+    protected static String whichUser = "";
+
+
     TextView countdownText;
 
     @Override
@@ -27,6 +30,7 @@ public class CountdownActivity extends ActionBarActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             readyObjId = extras.getString("readyObjId");
+            whichUser = extras.getString("whichUser");
         }
 
         doCountdown();
@@ -72,6 +76,7 @@ public class CountdownActivity extends ActionBarActivity {
         } else {
             Intent openMainActivity =  new Intent(CountdownActivity.this, RunningActivity.class);
             openMainActivity.putExtra("readyObjId", readyObjId);
+            openMainActivity.putExtra("whichUser", whichUser);
             startActivity(openMainActivity);
             finish();
         }
