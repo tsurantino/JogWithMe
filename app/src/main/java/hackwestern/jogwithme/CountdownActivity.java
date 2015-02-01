@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 public class CountdownActivity extends ActionBarActivity {
     protected static String readyObjId = "";
-
     TextView countdownText;
 
     @Override

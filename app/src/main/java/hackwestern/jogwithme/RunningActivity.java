@@ -152,6 +152,7 @@ public class RunningActivity extends ActionBarActivity implements
                         runObj.put(whichUser + "_encouragement", encouragement);
                         runObj.put(whichUser + "_distance", myTempDist);
                         runObj.put(whichUser + "_pace", myTempPace);
+                        runObj.saveInBackground();
                     }
                 });
             }
