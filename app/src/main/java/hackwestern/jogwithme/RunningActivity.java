@@ -317,10 +317,13 @@ public class RunningActivity extends ActionBarActivity implements
         switch (received_encouragement) {
             case 0:
                 Toast.makeText(getApplicationContext(), "You can do it!", Toast.LENGTH_SHORT).show();
+                break;
             case 1:
                 Toast.makeText(getApplicationContext(), "Keep going!", Toast.LENGTH_SHORT).show();
+                break;
             case 2:
                 Toast.makeText(getApplicationContext(), "You\'re doing great!", Toast.LENGTH_SHORT).show();
+                break;
         }
         received_encouragement = -1;
     }
