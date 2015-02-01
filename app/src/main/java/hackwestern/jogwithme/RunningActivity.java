@@ -150,6 +150,10 @@ public class RunningActivity extends ActionBarActivity implements
                         encouragement = runObj.getInt(otherUser + "_encouragement");
                         doEncouragement();
 
+
+                        Log.d("Saving to Parse", "Encouragement: " + String.valueOf(encouragement));
+                        Log.d("Saving to Parse", "Key: " + whichUser + "_encouragement");
+
                         runObj.put(whichUser + "_encouragement", encouragement);
                         runObj.put(whichUser + "_distance", myTempDist);
                         runObj.put(whichUser + "_pace", myTempPace);
