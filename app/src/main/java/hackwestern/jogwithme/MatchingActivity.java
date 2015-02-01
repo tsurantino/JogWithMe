@@ -31,8 +31,9 @@ public class MatchingActivity extends ActionBarActivity {
         @Override
         public void run() {
 
-            checkReady();
-            checkMatches();
+            checkMyRoom(); // check if someone has joined my room
+            checkReady();  // check if there are any other rooms to join
+            checkMatches(); // check if we need to create our own room
 
             timerHandler.postDelayed(this, 3000);
         }
@@ -70,6 +71,39 @@ public class MatchingActivity extends ActionBarActivity {
 
                 } else {
                     Log.d("Matching", "Error: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    public void checkMyRoom() {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Ready");
+
+        query.whereNotEqualTo("secondUser", "");
+        query.whereEqualTo("duration", objDuration);
+        query.whereEqualTo("distance", objDistance);
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> readyList, ParseException e) {
+                if (e == null) {
+                    /* I am ready second, therefore, I am the second user */
+                    Log.d("Ready", "Retrieved " + readyList.size() + " ready");
+
+                    if (readyList.size() > 0) {
+                        final String readyObjId = readyList.get(0).getObjectId();
+                        readyList.get(0).saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    // successful save
+                                    String rObjId = readyObjId;
+                                    goToReady(rObjId, "first");
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    Log.d("Ready", "Error: " + e.getMessage());
                 }
             }
         });
