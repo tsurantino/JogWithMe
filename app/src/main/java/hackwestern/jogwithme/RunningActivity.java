@@ -56,8 +56,8 @@ import static android.location.LocationManager.GPS_PROVIDER;
 public class RunningActivity extends ActionBarActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
-    protected static int received_encouragement = -1;
-    protected static int sent_encouragement = -1;
+    protected static int received_encouragement = 0;
+    protected static int sent_encouragement = 0;
     protected static String readyObjId = "";
 
     protected static String whichUser = "";
@@ -136,8 +136,8 @@ public class RunningActivity extends ActionBarActivity implements
                         ourDistance = (TextView)findViewById(R.id.ourDistance);
                         ourPace = (TextView)findViewById(R.id.ourPace);
 
-                        ourDistance.setText(String.format("%s m", myTempDist));
-                        ourPace.setText(String.format("%s km/hr", myTempPace));
+                        ourDistance.setText(String.format("%.2f m", myTempDist));
+                        ourPace.setText(String.format("%.2f km/hr", myTempPace));
 
                         double theirTempDist = runObj.getNumber(otherUser + "_distance").doubleValue();
                         double theirTempPace = runObj.getNumber(otherUser + "_pace").doubleValue();
@@ -302,30 +302,30 @@ public class RunningActivity extends ActionBarActivity implements
     /* encouragements */
     public void encourageBoost(View v) {
         Log.d("Encouragement", "Retain!");
-        sent_encouragement = 0;
-    }
-
-    public void encourageRetain(View v) {
         sent_encouragement = 1;
     }
 
-    public void encourageExcel(View v) {
+    public void encourageRetain(View v) {
         sent_encouragement = 2;
+    }
+
+    public void encourageExcel(View v) {
+        sent_encouragement = 3;
     }
 
     public void doEncouragement() {
         switch (received_encouragement) {
-            case 0:
+            case 1:
                 Toast.makeText(getApplicationContext(), "You can do it!", Toast.LENGTH_SHORT).show();
                 break;
-            case 1:
+            case 2:
                 Toast.makeText(getApplicationContext(), "Keep going!", Toast.LENGTH_SHORT).show();
                 break;
-            case 2:
+            case 3:
                 Toast.makeText(getApplicationContext(), "You\'re doing great!", Toast.LENGTH_SHORT).show();
                 break;
         }
-        received_encouragement = -1;
+        received_encouragement = 0;
     }
 
     /**

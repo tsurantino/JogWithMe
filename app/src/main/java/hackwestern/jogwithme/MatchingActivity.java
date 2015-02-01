@@ -147,8 +147,8 @@ public class MatchingActivity extends ActionBarActivity {
                         newReadyObj.put("first_distance", 0.0);
                         newReadyObj.put("second_pace", 0.0);
                         newReadyObj.put("second_distance", 0.0);
-                        newReadyObj.put("first_encouragement", -1);
-                        newReadyObj.put("second_encouragement", -1);
+                        newReadyObj.put("first_encouragement", 0);
+                        newReadyObj.put("second_encouragement", 0);
                         newReadyObj.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
