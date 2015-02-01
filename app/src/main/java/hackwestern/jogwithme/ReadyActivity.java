@@ -138,7 +138,7 @@ public class ReadyActivity extends ActionBarActivity {
 
                         if (whichUser.equals("first")) {
                             Log.d("Ready", "Updating other user, who is second user");
-                            boolean isOtherReady = (boolean) readyObj.get("secondUserStatus");
+                            boolean isOtherReady = readyObj.getBoolean("secondUserStatus");
 
                             Log.d("Ready", "Their status: " + isOtherReady);
 
@@ -150,7 +150,7 @@ public class ReadyActivity extends ActionBarActivity {
 
                         } else {
                             Log.d("Ready", "Updating other user, who is first user");
-                            boolean isOtherReady = (boolean) readyObj.get("firstUserStatus");
+                            boolean isOtherReady = readyObj.getBoolean("firstUserStatus");
 
                             Log.d("Ready", "Their status: " + isOtherReady);
 
@@ -163,9 +163,9 @@ public class ReadyActivity extends ActionBarActivity {
 
                         if (bothReady) {
                             final ParseObject newRunObj = new ParseObject("Run");
-                            newRunObj.put("firstUser", readyObj.get("firstUser").toString());
-                            newRunObj.put("secondUser", readyObj.get("secondUser").toString());
-                            newRunObj.put("duration", readyObj.get("duration").toString());
+                            newRunObj.put("firstUser", readyObj.getString("firstUser"));
+                            newRunObj.put("secondUser", readyObj.getString("secondUser"));
+                            newRunObj.put("duration", readyObj.getString("duration"));
                             newRunObj.put("firstUserPace", "");
                             newRunObj.put("firstUserDistance", "");
                             newRunObj.put("secondUserPace", "");
