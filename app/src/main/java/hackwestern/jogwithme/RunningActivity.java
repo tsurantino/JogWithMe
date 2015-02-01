@@ -175,6 +175,7 @@ public class RunningActivity extends ActionBarActivity implements
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             readyObjId = extras.getString("readyObjId");
+            Log.d("Running", "Setting readyObjId to: " + readyObjId);
         }
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Run");

@@ -138,6 +138,13 @@ public class MatchingActivity extends ActionBarActivity {
                         newReadyObj.put("secondUserStatus", false);
                         newReadyObj.put("duration", objDuration);
                         newReadyObj.put("distance", objDistance);
+                        newReadyObj.put("total_distance", objDistance);
+                        newReadyObj.put("first_pace", 0.0);
+                        newReadyObj.put("first_distance", 0.0);
+                        newReadyObj.put("second_pace", 0.0);
+                        newReadyObj.put("second_distance", 0.0);
+                        newReadyObj.put("first_encouragement", -1);
+                        newReadyObj.put("second_encouragement", -1);
                         newReadyObj.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
