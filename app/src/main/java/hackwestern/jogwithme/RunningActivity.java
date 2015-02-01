@@ -1,5 +1,7 @@
 package hackwestern.jogwithme;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -8,12 +10,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.getpebble.android.kit.PebbleKit;
+import com.getpebble.android.kit.util.PebbleDictionary;
+import com.getpebble.android.kit.PebbleKit.PebbleAckReceiver;
+import com.getpebble.android.kit.PebbleKit.PebbleNackReceiver;
+
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.util.List;
+import java.util.UUID;
 
 
 public class RunningActivity extends ActionBarActivity {
@@ -24,18 +32,30 @@ public class RunningActivity extends ActionBarActivity {
     TextView runningDuration;
     long startTime = 0;
 
+    public static int minutes = 0;
+    public static int seconds = 0;
+
+    private final static UUID PEBBLE_APP_UUID =
+            UUID.fromString("47ec6b04-dc7a-4de5-acdc-b5d1ce836359");
+    private static final int KEY_DATA = 0;
+
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
             long millis = System.currentTimeMillis() - startTime;
-            int seconds = (int)(millis / 1000);
-            int minutes = seconds / 60;
+            seconds = (int)(millis / 1000);
+            minutes = seconds / 60;
             seconds = seconds % 60;
 
             if (minutes >= limit && seconds > 0) {
                 // stop the timer
                 timerHandler.removeCallbacks(timerRunnable);
+
+                Intent openMainActivity =  new Intent(RunningActivity.this, AfterRunStatsActivity.class);
+                startActivity(openMainActivity);
+                finish();
+
                 return;
             }
 
@@ -44,6 +64,12 @@ public class RunningActivity extends ActionBarActivity {
             }
 
             runningDuration.setText(String.format("%d:%02d", minutes, seconds));
+
+            PebbleDictionary data = new PebbleDictionary();
+            // Add a key of 0, and a string value.
+            data.addString(0, String.format("%s:%s", minutes, seconds));
+            PebbleKit.sendDataToPebble(getApplicationContext(), PEBBLE_APP_UUID, data);
+
             timerHandler.postDelayed(this, 1000);
         }
     };
@@ -75,6 +101,8 @@ public class RunningActivity extends ActionBarActivity {
         startTime = System.currentTimeMillis();
         runningDuration = (TextView) findViewById(R.id.runningDuration);
         timerHandler.postDelayed(timerRunnable, 0);
+
+        doPebble();
     }
 
 
@@ -98,5 +126,66 @@ public class RunningActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void doPebble() {
+        boolean connected = PebbleKit.isWatchConnected(getApplicationContext());
+        Log.i(getLocalClassName(), "Pebble is " + (connected ? "connected" : "not connected"));
+        if (connected) {
+            // Launching my app
+            PebbleKit.startAppOnPebble(getApplicationContext(), PEBBLE_APP_UUID);
+
+            // Handler for Pebble to send data to Android. Will sendAckToPebble upon receipt to acknolwedge.
+            final Handler handler = new Handler();
+            PebbleKit.registerReceivedDataHandler(this,
+                    new PebbleKit.PebbleDataReceiver(PEBBLE_APP_UUID) {
+
+                @Override
+                public void receiveData(final Context context, final int transactionId,
+                                        final PebbleDictionary data) {
+                    Log.i(getLocalClassName(), "Received value=" + data.getString(0) + " for key: 0");
+
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            /* Update your UI here. */
+                            // Send message to parse to other user
+                        }
+                    });
+                    PebbleKit.sendAckToPebble(getApplicationContext(), transactionId);
+                }
+
+            });
+
+            //
+            PebbleKit.registerReceivedAckHandler(getApplicationContext(), new PebbleAckReceiver(PEBBLE_APP_UUID) {
+                @Override
+                public void receiveAck(Context context, int transactionId) {
+                    Log.i(getLocalClassName(), "Received ack for transaction " + transactionId);
+                }
+            });
+
+            PebbleKit.registerReceivedNackHandler(getApplicationContext(), new PebbleNackReceiver(PEBBLE_APP_UUID) {
+                @Override
+                public void receiveNack(Context context, int transactionId) {
+                    Log.i(getLocalClassName(), "Received nack for transaction " + transactionId);
+                }
+            });
+            /*
+            // Receive messages on the Pebble from Android
+            while(true) {
+                try {
+                    Thread.sleep(1000);
+                }catch(Exception e) {
+                    Log.i(getLocalClassName(), "EXCEPTION THROWN BY THREAD.SLEEP");
+                }
+                PebbleKit.sendDataToPebble(getApplicationContext(), PEBBLE_APP_UUID, data);
+            }*/
+        }
+    }
+
+    public void killPebble() {
+        PebbleKit.startAppOnPebble(getApplicationContext(), PEBBLE_APP_UUID);
     }
 }
