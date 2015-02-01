@@ -126,7 +126,7 @@ public class RunningActivity extends ActionBarActivity implements
                         if (whichUser == "first") {
                             otherUser = "second";
                         } else {
-                            otherUser="first";
+                            otherUser = "first";
                         }
 
                         double myTempDist = locationController.getDistance();
@@ -141,8 +141,8 @@ public class RunningActivity extends ActionBarActivity implements
                         theirDistance = (TextView)findViewById(R.id.theirDistance);
                         theirPace = (TextView)findViewById(R.id.theirPace);
 
-                        double theirTempDist = runObj.getDouble(otherUser + "_distance");
-                        double theirTempPace = runObj.getDouble(otherUser + "_pace");
+                        double theirTempDist = runObj.getNumber(otherUser + "_distance").doubleValue();
+                        double theirTempPace = runObj.getNumber(otherUser + "_pace").doubleValue();
 
                         theirDistance.setText(String.format("%s m", theirTempDist));
                         theirPace.setText(String.format("%s km/hr", theirTempPace));
