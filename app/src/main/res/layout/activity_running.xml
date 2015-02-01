@@ -37,7 +37,8 @@
                 android:text="11 min/km"
                 android:paddingLeft="10dp"
                 android:layout_weight="0.5"
-                android:textSize="30dp"/>
+                android:textSize="30dp"
+                android:id="@+id/theirPace" />
 
         </LinearLayout>
         <LinearLayout
@@ -57,7 +58,8 @@
                 android:text="5.7 km"
                 android:paddingLeft="10dp"
                 android:layout_weight="0.5"
-                android:textSize="30dp"/>
+                android:textSize="30dp"
+                android:id="@+id/theirDistance" />
         </LinearLayout>
     </LinearLayout>
 
@@ -118,7 +120,8 @@
                 android:text="8 min/km"
                 android:paddingLeft="10dp"
                 android:layout_weight="0.5"
-                android:textSize="30dp"/>
+                android:textSize="30dp"
+                android:id="@+id/ourPace" />
 
         </LinearLayout>
         <LinearLayout
@@ -138,7 +141,8 @@
                 android:text="4.3 km"
                 android:paddingLeft="10dp"
                 android:layout_weight="0.5"
-                android:textSize="30dp"/>
+                android:textSize="30dp"
+                android:id="@+id/ourDistance" />
         </LinearLayout>
     </LinearLayout>
 

@@ -164,65 +164,21 @@ public class ReadyActivity extends ActionBarActivity {
                         if (bothReady) {
                             timerHandler.removeCallbacks(timerRunnable);
 
-                            ParseQuery<ParseObject> query = ParseQuery.getQuery("Run");
-                            query.whereEqualTo("commonReadyObj", readyObjId);
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent openMainActivity = new Intent(
+                                            ReadyActivity.this,
+                                            CountdownActivity.class);
 
-                            query.findInBackground(new FindCallback<ParseObject>() {
-                                public void done(List<ParseObject> runList, ParseException e) {
-                                    if (e == null) {
-                                        if (runList.size() > 0) {
-                                            Intent openMainActivity = new Intent(
-                                                    ReadyActivity.this,
-                                                    CountdownActivity.class);
+                                    openMainActivity.putExtra("readyObjId", readyObjId);
+                                    openMainActivity.putExtra("whichUser", whichUser);
 
-                                            openMainActivity.putExtra("runObjId", runList.get(0).getObjectId());
-                                            openMainActivity.putExtra("whichUser", whichUser);
-
-                                            startActivity(openMainActivity);
-                                            finish();
-                                        } else {
-                                            // create it!
-                                            final ParseObject newRunObj = new ParseObject("Run");
-                                            newRunObj.put("commonReadyObj", readyObjId);
-                                            newRunObj.put("firstUser", readyObj.getString("firstUser"));
-                                            newRunObj.put("secondUser", readyObj.getString("secondUser"));
-                                            newRunObj.put("duration", readyObj.getString("duration"));
-                                            newRunObj.put("firstUserPace", "");
-                                            newRunObj.put("firstUserDistance", "");
-                                            newRunObj.put("secondUserPace", "");
-                                            newRunObj.put("secondUserDistance", "");
-                                            newRunObj.put("firstencouragement", -1);
-                                            newRunObj.put("secondencouragement", -1);
-
-                                            newRunObj.saveInBackground(new SaveCallback() {
-                                                @Override
-                                                public void done(ParseException e) {
-                                                    if (e == null) {
-                                                        // successful save
-                                                        runObjId = newRunObj.getObjectId();
-
-                                                        Handler handler = new Handler();
-                                                        handler.postDelayed(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                Intent openMainActivity = new Intent(
-                                                                        ReadyActivity.this,
-                                                                        CountdownActivity.class);
-
-                                                                openMainActivity.putExtra("runObjId", runObjId);
-                                                                openMainActivity.putExtra("whichUser", whichUser);
-
-                                                                startActivity(openMainActivity);
-                                                                finish();
-                                                            }
-                                                        }, 1500);
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }
+                                    startActivity(openMainActivity);
+                                    finish();
                                 }
-                            });
+                            }, 1500);
                         }
                     }
                 } else {

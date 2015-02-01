@@ -26,10 +26,38 @@ import com.parse.ParseQuery;
 import java.util.List;
 import java.util.UUID;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Application;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
+import android.content.IntentSender.SendIntentException;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
+import android.widget.TextView;
 
-public class RunningActivity extends ActionBarActivity {
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.plus.Plus;
+
+import static android.location.LocationManager.GPS_PROVIDER;
+
+public class RunningActivity extends ActionBarActivity implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
     protected static int encouragement = -1;
-    protected static String runObjId = "";
+    protected static String readyObjId = "";
 
     protected static String whichUser = "";
 
@@ -39,20 +67,40 @@ public class RunningActivity extends ActionBarActivity {
     long startTime = 0;
 
     public static int minutes = 0;
+    public static int total_seconds = 0;
     public static int seconds = 0;
 
     private final static UUID PEBBLE_APP_UUID =
             UUID.fromString("47ec6b04-dc7a-4de5-acdc-b5d1ce836359");
     private static final int KEY_DATA = 0;
 
+    /*
+        loc
+     */
+    private static final String TAG = "LocationServices";
+    private static final String KEY_IN_RESOLUTION = "is_in_resolution";
+    protected static final int REQUEST_CODE_RESOLUTION = 1;
+    private GoogleApiClient mGoogleApiClient;
+    private boolean mIsInResolution;
+    private LocationController locationController;
+
+    /*
+     * sync
+     */
+    TextView ourPace;
+    TextView ourDistance;
+
+    TextView theirPace;
+    TextView theirDistance;
+
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
             long millis = System.currentTimeMillis() - startTime;
-            seconds = (int)(millis / 1000);
-            minutes = seconds / 60;
-            seconds = seconds % 60;
+            total_seconds = (int)(millis / 1000);
+            minutes = total_seconds / 60;
+            seconds = total_seconds % 60;
 
             if (minutes >= limit && seconds > 0) {
                 // stop the timer
@@ -67,12 +115,13 @@ public class RunningActivity extends ActionBarActivity {
             }
 
             if (seconds % pollTime == 0) {
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("Run");
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Ready");
 
                 // Retrieve the object by id
-                query.getInBackground(runObjId, new GetCallback<ParseObject>() {
+                query.getInBackground(readyObjId, new GetCallback<ParseObject>() {
                     public void done(ParseObject runObj, ParseException e) {
-                        Log.d("Run", "Found our run");
+                        Log.d("Run", "Found our ready");
+
                         String otherUser = "";
                         if (whichUser == "first") {
                             otherUser = "second";
@@ -80,8 +129,29 @@ public class RunningActivity extends ActionBarActivity {
                             otherUser="first";
                         }
 
-                        encouragement = runObj.getInt(otherUser + "encouragement");
-                        runObj.put(whichUser+"encouragement", encouragement);
+                        double myTempDist = locationController.getDistance();
+                        double myTempPace = myTempDist * 1000 / total_seconds / 3600;
+
+                        ourDistance = (TextView)findViewById(R.id.ourDistance);
+                        ourPace = (TextView)findViewById(R.id.ourPace);
+
+                        ourDistance.setText(String.format("%s m", myTempDist));
+                        ourPace.setText(String.format("%s km/hr", myTempPace));
+
+                        theirDistance = (TextView)findViewById(R.id.theirDistance);
+                        theirPace = (TextView)findViewById(R.id.theirPace);
+
+                        double theirTempDist = runObj.getDouble(otherUser + "_distance");
+                        double theirTempPace = runObj.getDouble(otherUser + "_pace");
+
+                        theirDistance.setText(String.format("%s m", theirTempDist));
+                        theirPace.setText(String.format("%s km/hr", theirTempPace));
+
+                        encouragement = runObj.getInt(otherUser + "_encouragement");
+
+                        runObj.put(whichUser + "_encouragement", encouragement);
+                        runObj.put(whichUser + "_distance", myTempDist);
+                        runObj.put(whichUser + "_pace", myTempPace);
                     }
                 });
             }
@@ -104,11 +174,11 @@ public class RunningActivity extends ActionBarActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            runObjId = extras.getString("runObjId");
+            readyObjId = extras.getString("readyObjId");
         }
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Run");
-        query.whereEqualTo("objectId", runObjId);
+        query.whereEqualTo("objectId", readyObjId);
 
         query.findInBackground(new FindCallback<ParseObject>() {
                public void done(List<ParseObject> runList, ParseException e) {
@@ -126,6 +196,15 @@ public class RunningActivity extends ActionBarActivity {
         timerHandler.postDelayed(timerRunnable, 0);
 
         doPebble();
+
+        // loc
+        if (savedInstanceState != null) {
+            mIsInResolution = savedInstanceState.getBoolean(KEY_IN_RESOLUTION, false);
+        }
+        locationController = new LocationController(this,this);
+
+        // sync
+
     }
 
 
@@ -235,5 +314,126 @@ public class RunningActivity extends ActionBarActivity {
                 Toast.makeText(getApplicationContext(), "You\'re doing great!", Toast.LENGTH_SHORT).show();
         }
         encouragement = -1;
+    }
+
+    /**
+     * Called when the Activity is made visible.
+     * A connection to Play Services need to be initiated as
+     * soon as the activity is visible. Registers {@code ConnectionCallbacks}
+     * and {@code OnConnectionFailedListener} on the
+     * activities itself.
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(Plus.API)
+                    .addScope(Plus.SCOPE_PLUS_LOGIN)
+                            // Optionally, add additional APIs and scopes if required.
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
+        mGoogleApiClient.connect();
+//        locationManager.connect();
+    }
+
+    /**
+     * Called when activity gets invisible. Connection to Play Services needs to
+     * be disconnected as soon as an activity is invisible.
+     */
+    @Override
+    protected void onStop() {
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
+//        if(locationManager.isConnected()){
+//            stopPeriodicUpdates();
+//        }
+//        locationManager.disconnect();
+        super.onStop();
+    }
+
+    /**
+     * Saves the resolution state.
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_IN_RESOLUTION, mIsInResolution);
+    }
+
+    /**
+     * Handles Google Play Services resolution callbacks.
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_RESOLUTION:
+                retryConnecting();
+                break;
+        }
+    }
+
+    private void retryConnecting() {
+        mIsInResolution = false;
+        if (!mGoogleApiClient.isConnecting()) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    /**
+     * Called when {@code mGoogleApiClient} is connected.
+     */
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        Log.i(TAG, "GoogleApiClient connected");
+        // TODO: Start making API requests.
+        locationController.startRun();
+    }
+
+    /**
+     * Called when {@code mGoogleApiClient} connection is suspended.
+     */
+    @Override
+    public void onConnectionSuspended(int cause) {
+        Log.i(TAG, "GoogleApiClient connection suspended");
+        retryConnecting();
+    }
+
+    /**
+     * Called when {@code mGoogleApiClient} is trying to connect but failed.
+     * Handle {@code result.getResolution()} if there is a resolution
+     * available.
+     */
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Log.i(TAG, "GoogleApiClient connection failed: " + result.toString());
+        if (!result.hasResolution()) {
+            // Show a localized error dialog.
+            GooglePlayServicesUtil.getErrorDialog(
+                    result.getErrorCode(), this, 0, new OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            retryConnecting();
+                        }
+                    }).show();
+            return;
+        }
+        // If there is an existing resolution error being displayed or a resolution
+        // activity has started before, do nothing and wait for resolution
+        // progress to be completed.
+        if (mIsInResolution) {
+            return;
+        }
+        mIsInResolution = true;
+        try {
+            result.startResolutionForResult(this, REQUEST_CODE_RESOLUTION);
+        } catch (SendIntentException e) {
+            Log.e(TAG, "Exception while starting resolution activity", e);
+            retryConnecting();
+        }
     }
 }
