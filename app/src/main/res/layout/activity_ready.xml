@@ -1,0 +1,159 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.uofthacks.shirley.jogwithme.ReadyActivity"
+    android:orientation="vertical"
+    >
+
+    <!-- Matched person -->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.5"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="170dp"
+                android:paddingTop="20dp"
+                android:paddingLeft="20dp"
+                android:layout_weight="0.8"
+                android:background="#ffffff"/>
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="Anoop Toor"
+                android:paddingLeft="10dp"/>
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="@string/their_loc"
+                android:paddingLeft="10dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.5"
+            android:orientation="vertical"
+            android:paddingTop="10dp">
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="Their Last Distance"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.1"/>
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="7.2 km"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.5"
+                android:textSize="50dp"/>
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="Their Last Time"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.1"/>
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="27 min"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.5"
+                android:textSize="50dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="NOT READY"
+        android:background="#B20000"
+        android:id="@+id/theirReady" />
+
+    <!-- Self profile -->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.5"
+            android:paddingTop="10dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="Your Last Distance"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.1"/>
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="5.6 km"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.5"
+                android:textSize="50dp"/>
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="Your Last Time"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.1"/>
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="34 min"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.5"
+                android:textSize="50dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.5"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="170dp"
+                android:paddingTop="20dp"
+                android:paddingLeft="20dp"
+                android:layout_weight="0.8"
+                android:background="#ffffff"/>
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="Shirley Miao"
+                android:paddingLeft="10dp"/>
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="Kitchener, Canada"
+                android:paddingLeft="10dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Self ready button - needs to trigger -->
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="CLICK TO SET READY"
+        android:background="#B20000"
+        android:id="@+id/myReady"
+        android:onClick="setMyReady" />
+</LinearLayout>

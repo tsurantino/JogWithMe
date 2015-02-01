@@ -1,0 +1,139 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.uofthacks.shirley.jogwithme.ReadyActivity"
+    android:orientation="vertical">
+
+    <!-- Matched person -->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.5"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Anoop Toor"
+                    android:paddingTop="20dp"
+                    android:paddingLeft="20dp"
+                    android:paddingBottom="20dp"
+                    android:paddingRight="0dp"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical" />
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="right"
+                    android:layout_gravity="right">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Average Pace"
+                        android:paddingTop="5dp"
+                        android:paddingLeft="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingRight="20dp"
+                        android:gravity="right"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:text="9 min/km"
+                        android:paddingTop="20dp"
+                        android:paddingLeft="5dp"
+                        android:paddingBottom="20dp"
+                        android:paddingRight="20dp" />
+               </LinearLayout>
+            </LinearLayout>
+            <com.jjoe64.graphview.helper.GraphViewXML
+                android:layout_width="fill_parent"
+                android:layout_height="160dip"
+                app:seriesData="0=5.0;1=5;2=4;3=9"
+                app:seriesType="line"
+                app:seriesColor="#0099CC" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Self stats -->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.5"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Shirley Miao"
+                    android:paddingTop="20dp"
+                    android:paddingLeft="20dp"
+                    android:paddingBottom="20dp"
+                    android:paddingRight="0dp"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical" />
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="right"
+                    android:layout_gravity="right">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Average Pace"
+                        android:paddingTop="5dp"
+                        android:paddingLeft="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingRight="20dp"
+                        android:gravity="right"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:text="12 min/km"
+                        android:paddingTop="20dp"
+                        android:paddingLeft="5dp"
+                        android:paddingBottom="20dp"
+                        android:paddingRight="20dp" />
+                </LinearLayout>
+            </LinearLayout>
+            <com.jjoe64.graphview.helper.GraphViewXML
+                android:layout_width="fill_parent"
+                android:layout_height="160dip"
+                app:seriesData="0=5.0;1=5;2=4;3=9"
+                app:seriesType="line"
+                app:seriesColor="#0099CC" />
+        </LinearLayout>
+    </LinearLayout>
+    <!--Button-->
+    <Button
+        android:text="New run"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+</LinearLayout>
+

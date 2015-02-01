@@ -1,0 +1,180 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="hackwestern.jogwithme.RunActivity"
+    android:orientation="vertical"
+    >
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Anoop Toor"
+        android:padding="20dp"
+        android:gravity="center_horizontal"
+        android:textStyle="bold" />
+
+    <!-- Matched person -->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="@string/pace"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.1"/>
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="11 min/km"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.5"
+                android:textSize="30dp"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="@string/distance"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.1"/>
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="5.7 km"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.5"
+                android:textSize="30dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--Their progress bar -->
+    <ProgressBar
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:background="#ccc"/>
+
+    <!-- Time since beginning -->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="2:34"
+        android:layout_weight="1"
+        android:textSize="100dp"
+        android:gravity="center"
+        android:id="@+id/runningDuration"
+        android:layout_gravity="center" />
+
+    <!--Our progress bar -->
+    <ProgressBar
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:background="#ccc"/>
+
+    <!-- Self stats -->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Shirley Miao"
+        android:padding="20dp"
+        android:gravity="center_horizontal"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="@string/pace"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.1"/>
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="8 min/km"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.5"
+                android:textSize="30dp"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="@string/distance"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.1"/>
+            <TextView
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:text="4.3 km"
+                android:paddingLeft="10dp"
+                android:layout_weight="0.5"
+                android:textSize="30dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:text="You Can Do It"
+            android:id="@+id/button"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="15dp" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:text="Keep Going"
+            android:id="@+id/button2"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="15dp" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:text="You&apos;re doing great"
+            android:id="@+id/button3"
+            android:layout_gravity="center_horizontal"
+            />
+    </LinearLayout>
+
+</LinearLayout>
