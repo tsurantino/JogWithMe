@@ -162,6 +162,8 @@ public class ReadyActivity extends ActionBarActivity {
                         }
 
                         if (bothReady) {
+                            timerHandler.removeCallbacks(timerRunnable);
+
                             final ParseObject newRunObj = new ParseObject("Run");
                             newRunObj.put("firstUser", readyObj.getString("firstUser"));
                             newRunObj.put("secondUser", readyObj.getString("secondUser"));
@@ -174,25 +176,25 @@ public class ReadyActivity extends ActionBarActivity {
                             newRunObj.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
-                                    if (e == null) {
-                                        // successful save
-                                        runObjId = newRunObj.getObjectId();
+                                if (e == null) {
+                                    // successful save
+                                    runObjId = newRunObj.getObjectId();
 
-                                        Handler handler = new Handler();
-                                        handler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Intent openMainActivity = new Intent(
-                                                        ReadyActivity.this,
-                                                        CountdownActivity.class);
+                                    Handler handler = new Handler();
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Intent openMainActivity = new Intent(
+                                                    ReadyActivity.this,
+                                                    CountdownActivity.class);
 
-                                                openMainActivity.putExtra("runObjId", runObjId);
+                                            openMainActivity.putExtra("runObjId", runObjId);
 
-                                                startActivity(openMainActivity);
-                                                finish();
-                                            }
-                                        }, 1500);
-                                    }
+                                            startActivity(openMainActivity);
+                                            finish();
+                                        }
+                                    }, 1500);
+                                }
                                 }
                             });
 
