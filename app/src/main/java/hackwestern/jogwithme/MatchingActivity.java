@@ -44,38 +44,37 @@ public class MatchingActivity extends ActionBarActivity {
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Ready");
 
-        query.whereEqualTo("secondUser", ParseUser.getCurrentUser().getUsername());
+        query.whereNotEqualTo("secondUser", "");
         query.whereEqualTo("duration", objDuration);
         query.whereEqualTo("distance", objDistance);
 
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> readyList, ParseException e) {
-                if (e == null) {
-                    /* I am ready second, therefore, I am the second user */
-                    Log.d("Matching", "Someone has joined my room");
+            if (e == null) {
+                /* I am ready second, therefore, I am the second user */
 
-                    if (readyList.size() > 0) {
-                        Log.d("Matching", "Using my room for ready state");
+                if (readyList.size() > 0) {
+                    Log.d("Matching", "Using my room for ready state");
 
-                        final String readyObjId = readyList.get(0).getObjectId();
-                        readyList.get(0).saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    // successful save
-                                    String rObjId = readyObjId;
-                                    goToReady(rObjId, "second");
-                                }
+                    final String readyObjId = readyList.get(0).getObjectId();
+                    readyList.get(0).saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                // successful save
+                                String rObjId = readyObjId;
+                                goToReady(rObjId, "first");
                             }
-                        });
-                    } else {
-                        Log.d("Matching", "Checking other rooms instead");
-
-                        checkOtherRooms();
-                    }
+                        }
+                    });
                 } else {
-                    Log.d("Matching", "Could not find someone in my room");
+                    Log.d("Matching", "Checking other rooms instead");
+
+                    checkOtherRooms();
                 }
+            } else {
+                Log.d("Matching", "Could not find someone in my room");
+            }
             }
         });
     }
