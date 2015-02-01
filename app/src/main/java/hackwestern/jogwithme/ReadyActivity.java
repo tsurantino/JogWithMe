@@ -100,15 +100,22 @@ public class ReadyActivity extends ActionBarActivity {
         // update Parse
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Ready");
 
+        Log.d("Ready", "Changing user status");
+        Log.d("Ready", "We are: " + whichUser);
+
         // Retrieve the object by id
         query.getInBackground(readyObjId, new GetCallback<ParseObject>() {
             public void done(ParseObject readyObj, ParseException e) {
+                Log.d("Ready", "Found our room");
+
                 if (e == null) {
-                    if (whichUser == "first") {
-                        readyObj.put("firstUserStatus", true);
+                    Log.d("Ready", "Updating status");
+
+                    if (whichUser.equals("first")) {
+                        readyObj.put("firstUserStatus", ready);
                         readyObj.saveInBackground();
                     } else {
-                        readyObj.put("secondUserStatus", true);
+                        readyObj.put("secondUserStatus", ready);
                         readyObj.saveInBackground();
                     }
                 }
@@ -117,6 +124,7 @@ public class ReadyActivity extends ActionBarActivity {
     }
 
     public void checkIfBothReady() {
+        Log.d("Ready", "Checking if both ready");
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Ready");
         query.whereEqualTo("objectId", readyObjId);
 
@@ -124,19 +132,28 @@ public class ReadyActivity extends ActionBarActivity {
             public void done(List<ParseObject> readyList, ParseException e) {
                 if (e == null) {
                     if (readyList.size() > 0) {
+                        Log.d("Ready", "Found our room");
                         boolean bothReady = false;
                         ParseObject readyObj = readyList.get(0);
 
-                        if (whichUser == "first") {
+                        if (whichUser.equals("first")) {
+                            Log.d("Ready", "Updating other user, who is second user");
                             boolean isOtherReady = (boolean) readyObj.get("secondUserStatus");
+
+                            Log.d("Ready", "Their status: " + isOtherReady);
+
                             updateOtherUser(isOtherReady);
 
                             if (ready && isOtherReady) {
                                 bothReady = true;
                             }
 
-                        } else if (whichUser == "second") {
+                        } else {
+                            Log.d("Ready", "Updating other user, who is first user");
                             boolean isOtherReady = (boolean) readyObj.get("firstUserStatus");
+
+                            Log.d("Ready", "Their status: " + isOtherReady);
+
                             updateOtherUser(isOtherReady);
 
                             if (ready && isOtherReady) {
