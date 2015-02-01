@@ -73,12 +73,15 @@ public class RunningActivity extends ActionBarActivity {
                 query.getInBackground(runObjId, new GetCallback<ParseObject>() {
                     public void done(ParseObject runObj, ParseException e) {
                         Log.d("Run", "Found our run");
-
-                        // set data
-                        if (encouragement >= 0 ) {
-                            runObj.put("encouragement", encouragement);
-                            encouragement = -1;
+                        String otherUser = "";
+                        if (whichUser == "first") {
+                            otherUser = "second";
+                        } else {
+                            otherUser="first";
                         }
+
+                        encouragement = runObj.getInt(otherUser + "encouragement");
+                        runObj.put(whichUser+"encouragement", encouragement);
                     }
                 });
             }

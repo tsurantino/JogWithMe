@@ -191,7 +191,8 @@ public class ReadyActivity extends ActionBarActivity {
                                             newRunObj.put("firstUserDistance", "");
                                             newRunObj.put("secondUserPace", "");
                                             newRunObj.put("secondUserDistance", "");
-                                            newRunObj.put("encouragement", -1);
+                                            newRunObj.put("firstencouragement", -1);
+                                            newRunObj.put("secondencouragement", -1);
 
                                             newRunObj.saveInBackground(new SaveCallback() {
                                                 @Override
