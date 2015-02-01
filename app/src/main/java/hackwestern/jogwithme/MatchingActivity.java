@@ -50,31 +50,32 @@ public class MatchingActivity extends ActionBarActivity {
 
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> readyList, ParseException e) {
-            if (e == null) {
-                /* I am ready second, therefore, I am the second user */
+                if (e == null) {
+                    /* I am ready second, therefore, I am the second user */
+                    Log.d("Matching", "Someone has joined my room");
 
-                if (readyList.size() > 0) {
-                    Log.d("Matching", "Using my room for ready state");
+                    if (readyList.size() > 0) {
+                        Log.d("Matching", "Using my room for ready state");
 
-                    final String readyObjId = readyList.get(0).getObjectId();
-                    readyList.get(0).saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                        if (e == null) {
-                            // successful save
-                            String rObjId = readyObjId;
-                            goToReady(rObjId, "first");
-                        }
-                        }
-                    });
+                        final String readyObjId = readyList.get(0).getObjectId();
+                        readyList.get(0).saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    // successful save
+                                    String rObjId = readyObjId;
+                                    goToReady(rObjId, "second");
+                                }
+                            }
+                        });
+                    } else {
+                        Log.d("Matching", "Checking other rooms instead");
+
+                        checkOtherRooms();
+                    }
                 } else {
-                    Log.d("Matching", "Checking other rooms instead");
-
-                    checkOtherRooms();
+                    Log.d("Matching", "Could not find someone in my room");
                 }
-            } else {
-                Log.d("Matching", "Could not find someone in my room");
-            }
             }
         });
     }
@@ -136,21 +137,15 @@ public class MatchingActivity extends ActionBarActivity {
                         newReadyObj.put("firstUserStatus", false);
                         newReadyObj.put("secondUserStatus", false);
                         newReadyObj.put("duration", objDuration);
-                        newReadyObj.put("total_distance", objDistance);
-                        newReadyObj.put("first_pace", 0);
-                        newReadyObj.put("first_distance", 0);
-                        newReadyObj.put("second_pace", 0);
-                        newReadyObj.put("second_distance", 0);
-                        newReadyObj.put("first_encouragement", -1);
-                        newReadyObj.put("second_encouragement", -1);
+                        newReadyObj.put("distance", objDistance);
                         newReadyObj.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
-                            if (e == null) {
-                                // successful save
-                                String rObjId = newReadyObj.getObjectId();
-                                goToReady(rObjId, "first");
-                            }
+                                if (e == null) {
+                                    // successful save
+                                    String rObjId = newReadyObj.getObjectId();
+                                    goToReady(rObjId, "first");
+                                }
                             }
                         });
                     }
