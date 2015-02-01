@@ -44,7 +44,7 @@ public class MatchingActivity extends ActionBarActivity {
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Ready");
 
-        query.whereNotEqualTo("secondUser", "");
+        query.whereEqualTo("secondUser", ParseUser.getCurrentUser().getUsername());
         query.whereEqualTo("duration", objDuration);
         query.whereEqualTo("distance", objDistance);
 
@@ -60,11 +60,11 @@ public class MatchingActivity extends ActionBarActivity {
                     readyList.get(0).saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
-                            if (e == null) {
-                                // successful save
-                                String rObjId = readyObjId;
-                                goToReady(rObjId, "first");
-                            }
+                        if (e == null) {
+                            // successful save
+                            String rObjId = readyObjId;
+                            goToReady(rObjId, "first");
+                        }
                         }
                     });
                 } else {
