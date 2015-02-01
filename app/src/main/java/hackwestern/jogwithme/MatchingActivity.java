@@ -51,10 +51,11 @@ public class MatchingActivity extends ActionBarActivity {
                     if (matchList.size() > 0) {
                         final ParseObject newReadyObj = new ParseObject("Ready");
                         newReadyObj.put("firstUser", ParseUser.getCurrentUser().getUsername());
-                        newReadyObj.put("secondUser", matchList.get(0).get("owner"));
+                        newReadyObj.put("secondUser", "");
                         newReadyObj.put("firstUserStatus", 0);
                         newReadyObj.put("secondUserStatus", 0);
                         newReadyObj.put("duration", objDuration);
+                        newReadyObj.put("distance", objDistance);
                         newReadyObj.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
@@ -76,7 +77,10 @@ public class MatchingActivity extends ActionBarActivity {
 
     public void checkReady() {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Ready");
-        query.whereEqualTo("secondUser", ParseUser.getCurrentUser().getUsername());
+
+        query.whereEqualTo("secondUser", "");
+        query.whereEqualTo("duration", objDuration);
+        query.whereEqualTo("distance", objDistance);
 
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> readyList, ParseException e) {
@@ -85,9 +89,19 @@ public class MatchingActivity extends ActionBarActivity {
                     Log.d("Ready", "Retrieved " + readyList.size() + " ready");
 
                     if (readyList.size() > 0) {
-                        String readyObjId = readyList.get(0).getObjectId();
-                        goToReady(readyObjId, "second");
+                        final String readyObjId = readyList.get(0).getObjectId();
 
+                        readyList.get(0).put("secondUser", ParseUser.getCurrentUser().getUsername());
+                        readyList.get(0).saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    // successful save
+                                    String rObjId = readyObjId;
+                                    goToReady(rObjId, "second");
+                                }
+                            }
+                        });
                     }
                 } else {
                     Log.d("Ready", "Error: " + e.getMessage());
