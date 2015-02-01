@@ -170,7 +170,7 @@ public class RunningActivity extends ActionBarActivity implements
             data.addString(0, String.format("%s:%s", minutes, seconds));
             PebbleKit.sendDataToPebble(getApplicationContext(), PEBBLE_APP_UUID, data);
 
-            timerHandler.postDelayed(this, 2000);
+            timerHandler.postDelayed(this, 1000);
         }
     };
 
