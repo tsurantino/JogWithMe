@@ -148,6 +148,7 @@ public class RunningActivity extends ActionBarActivity implements
                         theirPace.setText(String.format("%s km/hr", theirTempPace));
 
                         encouragement = runObj.getInt(otherUser + "_encouragement");
+                        doEncouragement();
 
                         runObj.put(whichUser + "_encouragement", encouragement);
                         runObj.put(whichUser + "_distance", myTempDist);
@@ -295,6 +296,7 @@ public class RunningActivity extends ActionBarActivity implements
 
     /* encouragements */
     public void encourageBoost(View v) {
+        Log.d("Encouragement", "Retain!");
         encouragement = 0;
     }
 
